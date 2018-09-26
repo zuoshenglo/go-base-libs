@@ -35,8 +35,8 @@
 		{
 			"checksumSHA1": "v1+fAfstlVxtGdhGKctbiAakrj0=",
 			"path": "github.com/zuoshenglo/go-base-libs",
-			"revision": "d49ad38cbd3f17a3cfedbbfbe6dc5c8235d80d1e",
-			"revisionTime": "2018-09-26T12:43:57Z"
+			"revision": "40da316bd58e435503e971625a4161ed8b419f0d",
+			"revisionTime": "2018-09-26T12:58:49Z"
 		}
 	],
 	"rootPath": "github.com/zuoshenglo/go-base-libs"
