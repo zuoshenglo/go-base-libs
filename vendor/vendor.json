@@ -31,6 +31,12 @@
 			"path": "github.com/cihub/seelog/archive/zip",
 			"revision": "f561c5e57575bb1e0a2167028b7339b3a8d16fb4",
 			"revisionTime": "2017-01-30T13:45:32Z"
+		},
+		{
+			"checksumSHA1": "v1+fAfstlVxtGdhGKctbiAakrj0=",
+			"path": "github.com/zuoshenglo/go-base-libs",
+			"revision": "d49ad38cbd3f17a3cfedbbfbe6dc5c8235d80d1e",
+			"revisionTime": "2018-09-26T12:43:57Z"
 		}
 	],
 	"rootPath": "github.com/zuoshenglo/go-base-libs"
