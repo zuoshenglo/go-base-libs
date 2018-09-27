@@ -28,17 +28,17 @@ type text struct {
 	Content string `json:"content"`
 }
 
-func (d *dingding) setUrl(url string) * dingding{
+func (d *dingding) SetUrl(url string) * dingding{
 	d.Url = url
 	return d
 }
 
-func (d * dingding) setContent(content string ) * dingding{
+func (d * dingding) SetContent(content string ) * dingding{
 	d.PostStruct.Text.Content = content
 	return d
 }
 
-func (d * dingding)  setMsgtype(msgType string) * dingding{
+func (d * dingding)  SetMsgtype(msgType string) * dingding{
 	d.PostStruct.Msgtype = msgType
 	return d
 }
