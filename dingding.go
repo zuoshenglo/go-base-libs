@@ -16,6 +16,7 @@ var Dingding = & dingding{}
 type dingding struct {
 	PostStruct postStruct
 	Url string
+
 }
 
 type postStruct struct {
@@ -44,11 +45,6 @@ func (d * dingding)  setMsgtype(msgType string) * dingding{
 
 func (d * dingding) SendDingDingAlert(content string)  {
 
-
-	//var dd *dingding = new(dingding)
-	//dd.setMsgtype("text")
-	//dd.setUrl(ServiceConf.Elasticsearch.Dingurl)
-	//dd.setContent(content)
 	postJson,err := json.Marshal(d.PostStruct)
 
 	if err != nil{
@@ -73,3 +69,8 @@ func (d * dingding) SendDingDingAlert(content string)  {
 	body, _ := ioutil.ReadAll(resp.Body)
 	log.Info("叮叮的返回信息为:", string(body))
 }
+
+// 使用
+//dd.setMsgtype("text") # 叮叮告警结构的类型
+//dd.setUrl(ServiceConf.Elasticsearch.Dingurl) # 叮叮的地址
+//dd.setContent(content) # 告警的内容
