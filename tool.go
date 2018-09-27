@@ -13,3 +13,7 @@ func (t * tool) GetCwd() string {
 	dir, _ := os.Getwd()
 	return dir
 }
+
+func (t * tool ) JsonStringToStruct()  {
+
+}
