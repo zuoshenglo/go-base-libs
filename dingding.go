@@ -64,7 +64,7 @@ func (d * dingding) SendDingDingAlert(content string)  {
 	client := &http.Client{Transport:tr}
 	resp, herr := client.Do(req)
 	if herr != nil {
-		log.Error("给叮叮发送告警信息失败", err)
+		log.Error("给叮叮发送告警信息失败", herr)
 		return
 	}
 	defer resp.Body.Close()
