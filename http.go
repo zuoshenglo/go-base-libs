@@ -1,7 +1,6 @@
 package go_base_libs
 
 import (
-	"encoding/json"
 	"net/http"
 	"crypto/tls"
 	"bytes"
@@ -9,20 +8,24 @@ import (
 	log "github.com/cihub/seelog"
 )
 
-func SendDingDingWebHook(sendDataStruct [] byte, url string)  {
+func SendDingDingWebHook(sendData [] byte, url string)  {
 
-	postJson,err := json.Marshal(sendDataStruct)
-
-	if err != nil{
-		log.Error("转换结构体为json格式失败，请检查程序", err)
-		return
-	}
+	//postJson,err := json.Marshal(sendDataStruct)
+	//
+	//if err != nil{
+	//	log.Error("转换结构体为json格式失败，请检查程序", err)
+	//	return
+	//}
 	//https
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	//http 主体
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(postJson))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(sendData))
+	if err != nil {
+		log.Error("新建请求数据格式错误！")
+		return
+	}
 	req.Close = true
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{Transport:tr}
