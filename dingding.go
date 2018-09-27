@@ -42,13 +42,14 @@ func (d * dingding)  setMsgtype(msgType string) * dingding{
 	return d
 }
 
-func SendDingDingAlert(content string)  {
+func (d * dingding) SendDingDingAlert(content string)  {
 
-	var dd *dingding = new(dingding)
-	dd.setMsgtype("text")
-	dd.setUrl(ServiceConf.Elasticsearch.Dingurl)
-	dd.setContent(content)
-	postJson,err := json.Marshal(dd.PostStruct)
+
+	//var dd *dingding = new(dingding)
+	//dd.setMsgtype("text")
+	//dd.setUrl(ServiceConf.Elasticsearch.Dingurl)
+	//dd.setContent(content)
+	postJson,err := json.Marshal(d.PostStruct)
 
 	if err != nil{
 		log.Error("转换结构体为json格式失败，请检查程序", err)
@@ -59,7 +60,7 @@ func SendDingDingAlert(content string)  {
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	//http 主体
-	req, err := http.NewRequest("POST", dd.Url, bytes.NewBuffer(postJson))
+	req, err := http.NewRequest("POST", d.Url, bytes.NewBuffer(postJson))
 	req.Close = true
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{Transport:tr}
