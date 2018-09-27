@@ -45,6 +45,8 @@ func (d * dingding)  SetMsgtype(msgType string) * dingding{
 
 func (d * dingding) SendDingDingAlert(content string)  {
 
+	d.SetContent(content)
+
 	postJson,err := json.Marshal(d.PostStruct)
 
 	if err != nil{
