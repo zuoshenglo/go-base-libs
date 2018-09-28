@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	log "github.com/cihub/seelog"
+	"fmt"
 )
 
 func SendDingDingWebHook(sendData [] byte, url string) string {
@@ -20,19 +21,21 @@ func SendDingDingWebHook(sendData [] byte, url string) string {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
+
 	//http 主体
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(sendData))
 	if err != nil {
 		log.Error("新建请求数据格式错误！")
-		return "新建请求数据格式错误！"
+		return fmt.Sprintf("新建请求数据格式错误！->%s", err)
 	}
+
 	req.Close = true
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{Transport:tr}
 	resp, herr := client.Do(req)
 	if herr != nil {
 		log.Error("给叮叮发送告警信息失败", herr)
-		return "给叮叮发送告警信息失败"
+		return fmt.Sprintf("给叮叮发送告警信息失败:%s",herr)
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)

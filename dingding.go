@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	log "github.com/cihub/seelog"
+	"fmt"
 )
 
 //叮叮告警是一个接口，下面应该对应多种格式
@@ -51,7 +52,7 @@ func (d * dingding) SendDingDingAlert(content string) string {
 
 	if err != nil{
 		log.Error("转换结构体为json格式失败，请检查程序", err)
-		return
+		return fmt.Sprintf("转换结构体为json格式失败，请检查程序:%s", err)
 	}
 	//https
 	tr := &http.Transport{
@@ -65,7 +66,7 @@ func (d * dingding) SendDingDingAlert(content string) string {
 	resp, herr := client.Do(req)
 	if herr != nil {
 		log.Error("给叮叮发送告警信息失败", herr)
-		return
+		return fmt.Sprintf("给叮叮发送告警信息失败:%s", herr)
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
