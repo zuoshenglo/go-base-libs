@@ -43,7 +43,7 @@ func (d * dingding)  SetMsgtype(msgType string) * dingding{
 	return d
 }
 
-func (d * dingding) SendDingDingAlert(content string)  {
+func (d * dingding) SendDingDingAlert(content string) string {
 
 	d.SetContent(content)
 
@@ -70,6 +70,7 @@ func (d * dingding) SendDingDingAlert(content string)  {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	log.Info("叮叮的返回信息为:", string(body))
+	return string(body)
 }
 
 // 使用
