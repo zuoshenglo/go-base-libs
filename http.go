@@ -8,7 +8,7 @@ import (
 	log "github.com/cihub/seelog"
 )
 
-func SendDingDingWebHook(sendData [] byte, url string)  {
+func SendDingDingWebHook(sendData [] byte, url string) string {
 
 	//postJson,err := json.Marshal(sendDataStruct)
 	//
@@ -24,7 +24,7 @@ func SendDingDingWebHook(sendData [] byte, url string)  {
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(sendData))
 	if err != nil {
 		log.Error("新建请求数据格式错误！")
-		return
+		return "新建请求数据格式错误！"
 	}
 	req.Close = true
 	req.Header.Set("Content-Type", "application/json")
@@ -32,9 +32,10 @@ func SendDingDingWebHook(sendData [] byte, url string)  {
 	resp, herr := client.Do(req)
 	if herr != nil {
 		log.Error("给叮叮发送告警信息失败", herr)
-		return
+		return "给叮叮发送告警信息失败"
 	}
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	log.Info("叮叮的返回信息为:", string(body))
+	return string(body)
 }
