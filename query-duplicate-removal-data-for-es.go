@@ -9,11 +9,20 @@ import (
 	"encoding/json"
 )
 
-var QueryDuplicateRemovalData = & queryDuplicateRemovalData{
-	Type: "log",
-	Size: 1000,
-	Aggregation: "groupby",
-	BucketsKeySlice: make([] string, 0),
+//var QueryDuplicateRemovalData = & queryDuplicateRemovalData{
+//	Type: "log",
+//	Size: 1000,
+//	Aggregation: "groupby",
+//	BucketsKeySlice: make([] string, 0),
+//}
+
+func NewQueryDuplicateRemovalData() * queryDuplicateRemovalData {
+	return & queryDuplicateRemovalData{
+		Type: "log",
+		Size: 1000,
+		Aggregation: "groupby",
+		BucketsKeySlice: make([] string, 0),
+	}
 }
 
 type queryDuplicateRemovalData struct {
@@ -63,7 +72,6 @@ func (q * queryDuplicateRemovalData) QueryMain() (* queryDuplicateRemovalData, e
 	res, err :=OperateEs.client.Search(q.IndexName).Type(q.Type).Size(q.Size).Aggregation(q.Aggregation, esInitClient).Do(context.Background())
 	if err != nil {
 		return q,err
-		//fmt.Println("11212121", err)
 	} else {
 		q.Res = res
 	}
