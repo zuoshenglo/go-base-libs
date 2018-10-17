@@ -53,7 +53,7 @@ func (q * queryDuplicateRemovalData) SetSize(size int) * queryDuplicateRemovalDa
 	return q
 }
 
-func (q * queryDuplicateRemovalData) QueryMain() error {
+func (q * queryDuplicateRemovalData) QueryMain() (* queryDuplicateRemovalData, error) {
 
 	OperateEs.User = "admin"
 	OperateEs.Password = "1313GHGHG321dd"
@@ -62,7 +62,7 @@ func (q * queryDuplicateRemovalData) QueryMain() error {
 	esInitClient := elastic.NewTermsAggregation().Field(q.FieldName)
 	res, err :=OperateEs.client.Search(q.IndexName).Type(q.Type).Size(q.Size).Aggregation(q.Aggregation, esInitClient).Do(context.Background())
 	if err != nil {
-		return err
+		return q,err
 		//fmt.Println("11212121", err)
 	} else {
 		q.Res = res
@@ -72,7 +72,7 @@ func (q * queryDuplicateRemovalData) QueryMain() error {
 	var p AggregationsGroupby
 	errJson := json.Unmarshal(* res.Aggregations["groupby"], & p)
 	if errJson !=nil {
-		return errJson
+		return q,errJson
 	}
 
 	// 有元素的时候，才开始轮训,把key存于一个动态的数组slice中
@@ -82,7 +82,7 @@ func (q * queryDuplicateRemovalData) QueryMain() error {
 		}
 	}
 
-	return nil
+	return q,nil
 }
 
 type AggregationsGroupby struct {
