@@ -4,12 +4,86 @@ package go_base_libs
 import (
 	"time"
 	//"gopkg.in/olivere/elastic.v6"
+	"gopkg.in/olivere/elastic.v6"
+	"context"
+	"fmt"
+	"encoding/json"
 )
 
-type QueryDuplicateRemovalData struct {
-	IndexName string
-	FieldName string
+var QueryDuplicateRemovalData = & queryDuplicateRemovalData{
+	Type: "log",
+	Size: 1000,
+	Aggregation: "groupby",
+}
+
+type queryDuplicateRemovalData struct {
+	IndexName string //必须
+	FieldName string //必须
+	Type string
+	Aggregation string
+	Size int
 	BeginTime time.Duration
 	EndTime time.Duration
+	Res * elastic.SearchResult
 }
+
+func (q * queryDuplicateRemovalData) SetIndexName(indexName string) * queryDuplicateRemovalData{
+	q.IndexName = indexName
+	return q
+}
+
+func (q * queryDuplicateRemovalData) SetFieldName(filedName string) * queryDuplicateRemovalData {
+	q.FieldName = filedName
+	return q
+}
+
+func (q * queryDuplicateRemovalData) SetType(docType string) * queryDuplicateRemovalData{
+	q.Type = docType
+	return q
+}
+
+func (q * queryDuplicateRemovalData) SetAggregation(aggregation string)  * queryDuplicateRemovalData {
+	q.Aggregation = aggregation
+	return q
+}
+
+func (q * queryDuplicateRemovalData) SetSize(size int) * queryDuplicateRemovalData {
+	q.Size = size
+	return q
+}
+
+func (q * queryDuplicateRemovalData) QueryMain() * queryDuplicateRemovalData {
+
+	OperateEs.User = "admin"
+	OperateEs.Password = "1313GHGHG321dd"
+	OperateEs.Address = "http://172.16.28.120:9200"
+	OperateEs.initClient()
+	esInitClient := elastic.NewTermsAggregation().Field(q.FieldName)
+	res, err :=OperateEs.client.Search(q.IndexName).Type(q.Type).Size(q.Size).Aggregation(q.Aggregation, esInitClient).Do(context.Background())
+	if err != nil {
+		fmt.Println("11212121", err)
+	} else {
+		q.Res = res
+	}
+	fmt.Println(res.Aggregations["groupby"])
+	var p AggregationsGroupby
+	errJson := json.Unmarshal(* res.Aggregations["groupby"], & p)
+	if errJson !=nil {
+		fmt.Println(errJson)
+	}
+	fmt.Println(p)
+	return q
+}
+
+type AggregationsGroupby struct {
+	DocCountErrorUpperBound int `json:"doc_count_error_upper_bound"`
+	SumOtherDocCount int `json:"sum_other_doc_count"`
+	Buckets [] GroupbyBuckets
+}
+
+type GroupbyBuckets struct {
+	Key string `json:"key"`
+	DocCount int `json:"doc_count"`
+}
+
 
