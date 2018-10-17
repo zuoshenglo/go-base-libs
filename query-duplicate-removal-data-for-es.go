@@ -14,6 +14,7 @@ var QueryDuplicateRemovalData = & queryDuplicateRemovalData{
 	Type: "log",
 	Size: 1000,
 	Aggregation: "groupby",
+	BucketsKeySlice: make([] string, 0),
 }
 
 type queryDuplicateRemovalData struct {
@@ -25,6 +26,7 @@ type queryDuplicateRemovalData struct {
 	BeginTime time.Duration
 	EndTime time.Duration
 	Res * elastic.SearchResult
+	BucketsKeySlice [] string
 }
 
 func (q * queryDuplicateRemovalData) SetIndexName(indexName string) * queryDuplicateRemovalData{
@@ -65,13 +67,21 @@ func (q * queryDuplicateRemovalData) QueryMain() * queryDuplicateRemovalData {
 	} else {
 		q.Res = res
 	}
-	fmt.Println(res.Aggregations["groupby"])
+
+	//解析数据
 	var p AggregationsGroupby
 	errJson := json.Unmarshal(* res.Aggregations["groupby"], & p)
 	if errJson !=nil {
 		fmt.Println(errJson)
 	}
-	fmt.Println(p)
+
+	// 有元素的时候，才开始轮训,把key存于一个动态的数组slice中
+	if len(p.Buckets) > 0 {
+		for _, v := range p.Buckets {
+			q.BucketsKeySlice = append(q.BucketsKeySlice, v.Key)
+		}
+	}
+
 	return q
 }
 
