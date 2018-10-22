@@ -4,16 +4,16 @@ import (
 	"os"
 )
 
-var Tool = & tool{}
+var Tool = &tool{}
 
 type tool struct {
 }
 
-func (t * tool) GetCwd() string {
+func (t *tool) GetCwd() string {
 	dir, _ := os.Getwd()
 	return dir
 }
 
-func (t * tool ) JsonStringToStruct()  {
+func (t *tool) JsonStringToStruct() {
 
 }

@@ -1,20 +1,21 @@
 package go_base_libs
 
 import (
+	"fmt"
 	"io/ioutil"
+
 	log "github.com/cihub/seelog"
 	"gopkg.in/yaml.v2"
-	"fmt"
 )
 
-var Conf = & conf {}
+var Conf = &conf{}
 
 type conf struct {
 	ServiceStruct interface{} //需要解析数据的结构体
-	ConfigFile string //yml配置文件
+	ConfigFile    string      //yml配置文件
 }
 
-func (c *conf) GetConf() * conf {
+func (c *conf) GetConf() *conf {
 	log.Info("读取service的配置信息。")
 
 	ymalFile, ierr := ioutil.ReadFile(c.ConfigFile)
