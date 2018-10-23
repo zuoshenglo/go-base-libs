@@ -63,15 +63,16 @@ type userTB struct {
 // 	dbw.queryData()
 // }
 
-func (dbw *DbWorker) InsertData(insertString string, args ...interface{}) {
-	stmt, testerr := dbw.Db.Prepare(insertString)
+// update delete insert 都统一使用这函数进行操作
+func (dbw *DbWorker) UpdateData(sqlString string, args ...interface{}) {
+	stmt, testerr := dbw.Db.Prepare(sqlString)
 	if testerr != nil {
 		fmt.Println("初始化失败：", testerr)
 	}
 	// stmt, err := db.Prepare("Insert userinfo set username=?,departname=?,created=?")
 	defer stmt.Close()
 
-	fmt.Println(insertString)
+	fmt.Println(sqlString)
 	ret, err := stmt.Exec()
 	if err != nil {
 		fmt.Printf("insert data error: %v\n", err)
@@ -89,48 +90,85 @@ func (dbw *DbWorker) QueryDataPre(ResStruct interface{}) {
 	dbw.ResStruct = ResStruct
 }
 
-func (dbw *DbWorker) QueryData(ResStruct TestStruct, args ...*string) {
+func (dbw *DbWorker) DeleteData(deleteString string) error {
+	stmt, testerr := dbw.Db.Prepare(deleteString)
+	if testerr != nil {
+		fmt.Println(testerr)
+		return nil
+	}
+
+	defer stmt.Close()
+
+	ret, err := stmt.Exec()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(ret.LastInsertId)
+	return nil
+}
+
+func (dbw *DbWorker) QueryData(queryString string) {
 	// stmt, _ := dbw.Db.Prepare(`SELECT * From user where age >= ? AND age < ?`)
-	stmt, testerr := dbw.Db.Prepare(`SELECT * FROM alter_roles`)
+	stmt, testerr := dbw.Db.Prepare(queryString)
 	if testerr != nil {
 		fmt.Println(testerr)
 	}
 	defer stmt.Close()
 
-	dbw.QueryDataPre(ResStruct)
+	// dbw.QueryDataPre(ResStruct)
 
 	rows, err := stmt.Query()
 	defer rows.Close()
 	if err != nil {
 		fmt.Printf("select data error: %v\n", err)
-		return
 	}
-	fmt.Println(args)
+
 	for rows.Next() {
-		rows.Scan(args)
-		// rows.Scan(args)
-		if err != nil {
-			fmt.Printf(err.Error())
-			continue
+		// fmt.Println(1)
+		// rows.Scan(&test.IndexName, &test.RoleName, &test.Roles)
+		// fmt.Println(test.IndexName)
+		columns, _ := rows.Columns()
+
+		scanArgs := make([]interface{}, len(columns))
+		values := make([]interface{}, len(columns))
+
+		for i := range values {
+			scanArgs[i] = &values[i]
 		}
-		// if !dbw.UserInfo.IndexName.Valid {
-		// 	dbw.UserInfo.IndexName.String = ""
-		// }
-		// if !dbw.UserInfo.RoleName.Valid {
-		// 	dbw.UserInfo.RoleName.String = ""
-		// }
-		fmt.Println(ResStruct.IndexName)
-		// fmt.Println("get data, id: ", dbw.UserInfo.IndexName, " name: ", dbw.UserInfo.Name.String, " age: ", int(dbw.UserInfo.Age.Int64))
+
+		//将数据保存到 record 字典
+		err := rows.Scan(scanArgs...)
+		fmt.Println(err)
+		record := make(map[string]string)
+		for i, col := range values {
+			if col != nil {
+				record[columns[i]] = string(col.([]byte))
+			}
+		}
+		fmt.Println(record)
+
 	}
+
+	// fmt.Println(rows)
+	// for rows.Next() {
+	// 	rows.Scan(&ResStruct.IndexName, &ResStruct.RoleName, &ResStruct.Roles)
+	// 	// rows.Scan(args)
+	// 	if err != nil {
+	// 		fmt.Printf(err.Error())
+	// 		continue
+	// 	}
+	// 	// if !dbw.UserInfo.IndexName.Valid {
+	// 	// 	dbw.UserInfo.IndexName.String = ""
+	// 	// }
+	// 	// if !dbw.UserInfo.RoleName.Valid {
+	// 	// 	dbw.UserInfo.RoleName.String = ""
+	// 	// }
+	// 	fmt.Println(ResStruct.IndexName)
+	// 	// fmt.Println("get data, id: ", dbw.UserInfo.IndexName, " name: ", dbw.UserInfo.Name.String, " age: ", int(dbw.UserInfo.Age.Int64))
+	// }
 
 	err = rows.Err()
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
-}
-
-type TestStruct struct {
-	IndexName sql.NullString
-	RoleName  sql.NullString
-	Roles     sql.NullString
 }
