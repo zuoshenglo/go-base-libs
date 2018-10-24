@@ -116,7 +116,7 @@ func (dbw *DbWorker) DeleteData(deleteString string) error {
 	return nil
 }
 
-func (dbw *DbWorker) QueryData(queryString string) map[string]string {
+func (dbw *DbWorker) QueryData(queryString string) []map[string]string {
 	// stmt, _ := dbw.Db.Prepare(`SELECT * From user where age >= ? AND age < ?`)
 	stmt, testerr := dbw.Db.Prepare(queryString)
 	if testerr != nil {
@@ -131,6 +131,8 @@ func (dbw *DbWorker) QueryData(queryString string) map[string]string {
 	if err != nil {
 		fmt.Printf("select data error: %v\n", err)
 	}
+
+	retunSlice := make([]map[string]string, 0)
 
 	for rows.Next() {
 		// fmt.Println(1)
@@ -154,8 +156,7 @@ func (dbw *DbWorker) QueryData(queryString string) map[string]string {
 				record[columns[i]] = string(col.([]byte))
 			}
 		}
-		fmt.Println(record)
-		return record
+		retunSlice = append(retunSlice, record)
 	}
 
 	// fmt.Println(rows)
@@ -180,4 +181,6 @@ func (dbw *DbWorker) QueryData(queryString string) map[string]string {
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
+
+	return retunSlice
 }
