@@ -116,7 +116,7 @@ func (dbw *DbWorker) DeleteData(deleteString string) error {
 	return nil
 }
 
-func (dbw *DbWorker) QueryData(queryString string) []map[string]string {
+func (dbw *DbWorker) QueryData(queryString string, args ...interface{}) []map[string]string {
 	// stmt, _ := dbw.Db.Prepare(`SELECT * From user where age >= ? AND age < ?`)
 	stmt, testerr := dbw.Db.Prepare(queryString)
 	if testerr != nil {
@@ -126,7 +126,7 @@ func (dbw *DbWorker) QueryData(queryString string) []map[string]string {
 
 	// dbw.QueryDataPre(ResStruct)
 
-	rows, err := stmt.Query()
+	rows, err := stmt.Query(args...)
 	defer rows.Close()
 	if err != nil {
 		fmt.Printf("select data error: %v\n", err)
