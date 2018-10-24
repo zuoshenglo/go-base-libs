@@ -81,7 +81,8 @@ func (dbw *DbWorker) UpdateData(sqlString string, args ...interface{}) {
 	defer stmt.Close()
 
 	fmt.Println(sqlString)
-	ret, err := stmt.Exec()
+	fmt.Println(args...)
+	ret, err := stmt.Exec(args...)
 	if err != nil {
 		fmt.Printf("insert data error: %v\n", err)
 		return
