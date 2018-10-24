@@ -116,7 +116,7 @@ func (dbw *DbWorker) DeleteData(deleteString string) error {
 	return nil
 }
 
-func (dbw *DbWorker) QueryData(queryString string) {
+func (dbw *DbWorker) QueryData(queryString string) map[string]string {
 	// stmt, _ := dbw.Db.Prepare(`SELECT * From user where age >= ? AND age < ?`)
 	stmt, testerr := dbw.Db.Prepare(queryString)
 	if testerr != nil {
@@ -155,7 +155,7 @@ func (dbw *DbWorker) QueryData(queryString string) {
 			}
 		}
 		fmt.Println(record)
-
+		return record
 	}
 
 	// fmt.Println(rows)
