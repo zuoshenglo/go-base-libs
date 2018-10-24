@@ -12,10 +12,10 @@ var ins *DbWorker
 var once sync.Once
 
 // 用sync.Once 使mysql的连接为单例模式
-func NewMysqlOperate(dsn string) *DbWorker {
+func NewMysqlOperate(address string, user string, password string, db string) *DbWorker {
 	once.Do(func() {
 		ins = &DbWorker{
-			Dsn: dsn,
+			Dsn: user + `:` + password + `@tcp(` + address + `)/` + db + `?charset=utf8`,
 		}
 	})
 
@@ -33,6 +33,12 @@ func NewMysqlOperate(dsn string) *DbWorker {
 // 手动关闭
 func (dbw *DbWorker) CloseCnn() {
 	dbw.Db.Close()
+}
+
+// 设置mysql的链接信息
+func (dbw *DbWorker) SetConnInfo(address string, user string, password string, db string) *DbWorker {
+	dbw.Dsn = user + `:` + password + `@tcp(` + address + `)/` + db + `?charset=utf8`
+	return dbw
 }
 
 type DbWorker struct {
@@ -65,7 +71,9 @@ type userTB struct {
 
 // update delete insert 都统一使用这函数进行操作
 func (dbw *DbWorker) UpdateData(sqlString string, args ...interface{}) {
+	fmt.Println(dbw.Dsn)
 	stmt, testerr := dbw.Db.Prepare(sqlString)
+
 	if testerr != nil {
 		fmt.Println("初始化失败：", testerr)
 	}

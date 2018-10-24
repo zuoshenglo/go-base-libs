@@ -2,11 +2,11 @@
 package go_base_libs
 
 import (
-	"time"
-	//"gopkg.in/olivere/elastic.v6"
-	"gopkg.in/olivere/elastic.v6"
 	"context"
 	"encoding/json"
+	"time" //"gopkg.in/olivere/elastic.v6"
+
+	"gopkg.in/olivere/elastic.v6"
 )
 
 //var QueryDuplicateRemovalData = & queryDuplicateRemovalData{
@@ -16,71 +16,71 @@ import (
 //	BucketsKeySlice: make([] string, 0),
 //}
 
-func NewQueryDuplicateRemovalData() * queryDuplicateRemovalData {
-	return & queryDuplicateRemovalData{
-		Type: "log",
-		Size: 1000,
-		Aggregation: "groupby",
-		BucketsKeySlice: make([] string, 0),
+func NewQueryDuplicateRemovalData() *queryDuplicateRemovalData {
+	return &queryDuplicateRemovalData{
+		Type:            "log",
+		Size:            1000,
+		Aggregation:     "groupby",
+		BucketsKeySlice: make([]string, 0),
 	}
 }
 
 type queryDuplicateRemovalData struct {
-	IndexName string //必须
-	FieldName string //必须
-	Type string
-	Aggregation string
-	Size int
-	BeginTime time.Duration
-	EndTime time.Duration
-	Res * elastic.SearchResult
-	BucketsKeySlice [] string
+	IndexName       string //必须
+	FieldName       string //必须
+	Type            string
+	Aggregation     string
+	Size            int
+	BeginTime       time.Duration
+	EndTime         time.Duration
+	Res             *elastic.SearchResult
+	BucketsKeySlice []string
 }
 
-func (q * queryDuplicateRemovalData) SetIndexName(indexName string) * queryDuplicateRemovalData{
+func (q *queryDuplicateRemovalData) SetIndexName(indexName string) *queryDuplicateRemovalData {
 	q.IndexName = indexName
 	return q
 }
 
-func (q * queryDuplicateRemovalData) SetFieldName(filedName string) * queryDuplicateRemovalData {
+func (q *queryDuplicateRemovalData) SetFieldName(filedName string) *queryDuplicateRemovalData {
 	q.FieldName = filedName
 	return q
 }
 
-func (q * queryDuplicateRemovalData) SetType(docType string) * queryDuplicateRemovalData{
+func (q *queryDuplicateRemovalData) SetType(docType string) *queryDuplicateRemovalData {
 	q.Type = docType
 	return q
 }
 
-func (q * queryDuplicateRemovalData) SetAggregation(aggregation string)  * queryDuplicateRemovalData {
+func (q *queryDuplicateRemovalData) SetAggregation(aggregation string) *queryDuplicateRemovalData {
 	q.Aggregation = aggregation
 	return q
 }
 
-func (q * queryDuplicateRemovalData) SetSize(size int) * queryDuplicateRemovalData {
+func (q *queryDuplicateRemovalData) SetSize(size int) *queryDuplicateRemovalData {
 	q.Size = size
 	return q
 }
 
-func (q * queryDuplicateRemovalData) QueryMain() (* queryDuplicateRemovalData, error) {
+func (q *queryDuplicateRemovalData) QueryMain() (*queryDuplicateRemovalData, error) {
 
 	OperateEs.User = "admin"
 	OperateEs.Password = "1313GHGHG321dd"
 	OperateEs.Address = "http://172.16.28.120:9200"
 	OperateEs.initClient()
 	esInitClient := elastic.NewTermsAggregation().Field(q.FieldName)
-	res, err :=OperateEs.client.Search(q.IndexName).Type(q.Type).Size(q.Size).Aggregation(q.Aggregation, esInitClient).Do(context.Background())
+	res, err := OperateEs.client.Search(q.IndexName).Type(q.Type).Size(q.Size).Aggregation(q.Aggregation, esInitClient).Do(context.Background())
 	if err != nil {
-		return q,err
+		return q, err
 	} else {
 		q.Res = res
 	}
 
 	//解析数据
 	var p AggregationsGroupby
-	errJson := json.Unmarshal(* res.Aggregations["groupby"], & p)
-	if errJson !=nil {
-		return q,errJson
+	errJson := json.Unmarshal(*res.Aggregations["groupby"], &p)
+	if errJson != nil {
+		return q, errJson
 	}
 
 	// 有元素的时候，才开始轮训,把key存于一个动态的数组slice中
@@ -90,18 +90,16 @@ func (q * queryDuplicateRemovalData) QueryMain() (* queryDuplicateRemovalData, e
 		}
 	}
 
-	return q,nil
+	return q, nil
 }
 
 type AggregationsGroupby struct {
 	DocCountErrorUpperBound int `json:"doc_count_error_upper_bound"`
-	SumOtherDocCount int `json:"sum_other_doc_count"`
-	Buckets [] GroupbyBuckets
+	SumOtherDocCount        int `json:"sum_other_doc_count"`
+	Buckets                 []GroupbyBuckets
 }
 
 type GroupbyBuckets struct {
-	Key string `json:"key"`
-	DocCount int `json:"doc_count"`
+	Key      string `json:"key"`
+	DocCount int    `json:"doc_count"`
 }
-
-
