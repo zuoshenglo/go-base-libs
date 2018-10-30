@@ -69,7 +69,7 @@ func (q *queryDuplicateRemovalData) QueryMain() (*queryDuplicateRemovalData, err
 	OperateEs.Address = "http://172.16.28.120:9200"
 	OperateEs.initClient()
 	esInitClient := elastic.NewTermsAggregation().Field(q.FieldName)
-	res, err := OperateEs.client.Search(q.IndexName).Type(q.Type).Size(q.Size).Aggregation(q.Aggregation, esInitClient).Do(context.Background())
+	res, err := OperateEs.Client.Search(q.IndexName).Type(q.Type).Size(q.Size).Aggregation(q.Aggregation, esInitClient).Do(context.Background())
 	if err != nil {
 		return q, err
 	} else {
