@@ -116,11 +116,11 @@ func (dbw *DbWorker) DeleteData(deleteString string) error {
 	return nil
 }
 
-func (dbw *DbWorker) QueryData(queryString string, args ...interface{}) []map[string]string {
+func (dbw *DbWorker) QueryData(queryString string, args ...interface{}) ([]map[string]string, error) {
 	// stmt, _ := dbw.Db.Prepare(`SELECT * From user where age >= ? AND age < ?`)
 	stmt, testerr := dbw.Db.Prepare(queryString)
 	if testerr != nil {
-		fmt.Println(testerr)
+		return make([]map[string]string, 0), testerr
 	}
 	defer stmt.Close()
 
@@ -129,7 +129,7 @@ func (dbw *DbWorker) QueryData(queryString string, args ...interface{}) []map[st
 	rows, err := stmt.Query(args...)
 	defer rows.Close()
 	if err != nil {
-		fmt.Printf("select data error: %v\n", err)
+		return make([]map[string]string, 0), err
 	}
 
 	retunSlice := make([]map[string]string, 0)
@@ -138,7 +138,10 @@ func (dbw *DbWorker) QueryData(queryString string, args ...interface{}) []map[st
 		// fmt.Println(1)
 		// rows.Scan(&test.IndexName, &test.RoleName, &test.Roles)
 		// fmt.Println(test.IndexName)
-		columns, _ := rows.Columns()
+		columns, cerror := rows.Columns()
+		if cerror != nil {
+			return make([]map[string]string, 0), cerror
+		}
 
 		scanArgs := make([]interface{}, len(columns))
 		values := make([]interface{}, len(columns))
@@ -148,8 +151,10 @@ func (dbw *DbWorker) QueryData(queryString string, args ...interface{}) []map[st
 		}
 
 		//将数据保存到 record 字典
-		err := rows.Scan(scanArgs...)
-		fmt.Println(err)
+		serr := rows.Scan(scanArgs...)
+		if serr != nil {
+			return make([]map[string]string, 0), cerror
+		}
 		record := make(map[string]string)
 		for i, col := range values {
 			if col != nil {
@@ -177,10 +182,9 @@ func (dbw *DbWorker) QueryData(queryString string, args ...interface{}) []map[st
 	// 	// fmt.Println("get data, id: ", dbw.UserInfo.IndexName, " name: ", dbw.UserInfo.Name.String, " age: ", int(dbw.UserInfo.Age.Int64))
 	// }
 
-	err = rows.Err()
-	if err != nil {
-		fmt.Printf(err.Error())
+	rerr := rows.Err()
+	if rerr != nil {
+		return make([]map[string]string, 0), rerr
 	}
-
-	return retunSlice
+	return retunSlice, nil
 }
