@@ -70,29 +70,31 @@ type userTB struct {
 // }
 
 // update delete insert 都统一使用这函数进行操作
-func (dbw *DbWorker) UpdateData(sqlString string, args ...interface{}) {
+func (dbw *DbWorker) UpdateData(sqlString string, args ...interface{}) error {
 	fmt.Println(dbw.Dsn)
 	stmt, testerr := dbw.Db.Prepare(sqlString)
 
 	if testerr != nil {
-		fmt.Println("初始化失败：", testerr)
+		return testerr
 	}
-	// stmt, err := db.Prepare("Insert userinfo set username=?,departname=?,created=?")
 	defer stmt.Close()
 
-	fmt.Println(sqlString)
-	fmt.Println(args...)
 	ret, err := stmt.Exec(args...)
 	if err != nil {
 		fmt.Printf("insert data error: %v\n", err)
-		return
+		return err
 	}
-	if LastInsertId, err := ret.LastInsertId(); nil == err {
+	if LastInsertId, err1 := ret.LastInsertId(); nil == err {
 		fmt.Println("LastInsertId:", LastInsertId)
+	} else {
+		return err1
 	}
-	if RowsAffected, err := ret.RowsAffected(); nil == err {
+	if RowsAffected, err2 := ret.RowsAffected(); nil == err {
 		fmt.Println("RowsAffected:", RowsAffected)
+	} else {
+		return err2
 	}
+	return nil
 }
 
 func (dbw *DbWorker) QueryDataPre(ResStruct interface{}) {
