@@ -93,6 +93,22 @@ type DingDingBase struct {
 	} `json:"text,omitempty"`
 }
 
+func NewBaseDingDingAlter() *UserDingDing {
+	return &UserDingDing{
+		MsgType: "text",
+	}
+}
+
+func (u *UserDingDing) SetMsgContent(msgContent string) *UserDingDing {
+	u.MsgContent = msgContent
+	return u
+}
+
+func (u *UserDingDing) SetUrl(url string) *UserDingDing {
+	u.Url = url
+	return u
+}
+
 // func NewBaseDingDingAlter(userReqBody []byte) ([]byte, error) {
 // 	var userDingDing *UserDingDing
 // 	if err := json.Unmarshal(userReqBody, userDingDing); err != nil {
