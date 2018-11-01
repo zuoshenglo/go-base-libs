@@ -93,7 +93,7 @@ type DingDingBase struct {
 	} `json:"text,omitempty"`
 }
 
-func NewBaseDingDingAlter() *UserDingDing {
+func NewUserDingDing() *UserDingDing {
 	return &UserDingDing{
 		MsgType: "text",
 	}
