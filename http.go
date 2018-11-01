@@ -111,6 +111,11 @@ func (hrc *HttpRequestCustom) ExecRequest() (string, error) {
 	return string(body), nil
 }
 
+// example
+// res, err := baseLibs.NewHttpRequestCustom([]byte(queeryString), "POST", "http://172.16.28.120:9200/sjgc-logs-2018.10.30.01/_search").SetRequestProtocol("http").SetBasicAuth("admin", "1313GHGHG321dd").ExecRequest()
+// if err != nil {
+// 	fmt.Println(err)
+// }
 func NewHttpRequestCustom(body []byte, method string, url string) *HttpRequestCustom {
 	return &HttpRequestCustom{
 		body:   body,
