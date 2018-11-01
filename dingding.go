@@ -79,8 +79,30 @@ func (d *dingding) SendDingDingAlert(content string) string {
 //dd.setUrl(ServiceConf.Elasticsearch.Dingurl) # 叮叮的地址
 //dd.setContent(content) # 告警的内容
 
-type BaseDingDing struct {
+type UserDingDing struct {
 	MsgContent string `json:"msgContent"`
 	Url        string `json:"url"`
 	MsgType    string `json:"msgType"`
 }
+
+// 最基础的告警 结构体, dingding struct
+type DingDingBase struct {
+	Msgtype string `json:"msgtype,omitempty"`
+	Text    struct {
+		Content string `json:"content,omitempty"`
+	} `json:"text,omitempty"`
+}
+
+// func NewBaseDingDingAlter(userReqBody []byte) ([]byte, error) {
+// 	var userDingDing *UserDingDing
+// 	if err := json.Unmarshal(userReqBody, userDingDing); err != nil {
+// 		return []byte(""), err
+// 	}
+
+// 	//
+// 	var dingDingBase = &DingDingBase{
+// 		Msgtype: "text",
+// 	}
+
+// 	return []byte("111"), nil
+// }
