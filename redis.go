@@ -1,6 +1,8 @@
 package go_base_libs
 
 import (
+	"time"
+
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -17,7 +19,7 @@ type Redis struct {
 
 // 初始化redis的链接
 func NewRedisConn(address string, db int, password string) (Redis, error) {
-	c, err := redis.Dial("tcp", address, redis.DialDatabase(db), redis.DialPassword(password))
+	c, err := redis.Dial("tcp", address, redis.DialConnectTimeout(5*time.Second), redis.DialDatabase(db), redis.DialPassword(password))
 	if err != nil {
 		return workRedis, err
 	}
