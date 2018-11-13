@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"os"
 	"encoding/json"
+	"tools/docker"
+	"fmt"
 )
 
 var Tool = &tool{}
@@ -26,6 +28,29 @@ func (t *tool) StringToJson(formatString string) (map[string]interface{}, error)
 		return data, err
 	}
 	return data, nil
+}
+
+// 对字符串做json格式的二层解析
+func (t *tool) StringToJsonJson(formatString string) (string, error) {
+	var data map[string]interface{}
+	if err := json.Unmarshal([]byte(formatString), &data); err != nil {
+		return "", err
+	}
+
+	// 一层已经解析出来了
+	var tmpString = ""
+	for k, v := range data {
+		if tmpStr, ok := v.(string); !ok {
+			if tmpMap, ok := v.(map[string]interface{}); ok {
+				for x, y := range tmpMap {
+					tmpString = tmpString + "# " + k + "." + x + " : " + fmt.Sprintf("%s", y) + "\n"
+				}
+			}
+		} else {
+			tmpString = tmpString + "# " + k + " : " + tmpStr + "\n"
+		}
+	}
+	return tmpString, nil
 }
 
 //去重复
