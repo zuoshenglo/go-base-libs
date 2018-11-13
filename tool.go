@@ -42,11 +42,11 @@ func (t *tool) StringToJsonJson(formatString string) (string, error) {
 		if tmpStr, ok := v.(string); !ok {
 			if tmpMap, ok := v.(map[string]interface{}); ok {
 				for x, y := range tmpMap {
-					tmpString = tmpString + "### " + k + "." + x + " : " + fmt.Sprintf("%s", y) + "\n"
+					tmpString = tmpString + "" + k + "." + x + " : " + fmt.Sprintf("%s", y) + "\n"
 				}
 			}
 		} else {
-			tmpString = tmpString + "### " + k + " : " + tmpStr + "\n"
+			tmpString = tmpString + "" + k + " : " + tmpStr + "\n"
 		}
 	}
 	return tmpString, nil
