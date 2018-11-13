@@ -93,6 +93,43 @@ type DingDingBase struct {
 	} `json:"text,omitempty"`
 }
 
+type DingDingMarkdown struct {
+	Msgtype string `json:"msgtype,omitempty"`
+	Markdown struct {
+		Title string `json:"title,omitempty"`
+		Text string `json:"text,omitempty"`
+	}
+
+	At struct {
+		AtMobiles [] string `json:"atMobiles,omitempty"`
+		IsAtAll bool `json:"isAtAll,omitempty"`
+	}
+}
+
+func NewDingDingMarkdown() *DingDingMarkdown {
+	return &DingDingMarkdown{
+		Msgtype: "markdown",
+		Markdown: struct {
+			Title string
+			Text  string
+		}{Title: "", Text: ""},
+		At: struct {
+			AtMobiles [] string
+			IsAtAll   bool
+		}{AtMobiles: [] string{}, IsAtAll: false},
+	}
+}
+
+func (dm * DingDingMarkdown) SetText(markdownText string) * DingDingMarkdown {
+	dm.Markdown.Text = markdownText
+	return dm
+}
+
+func (dm * DingDingMarkdown) SetTitle(markdownTitle string) * DingDingMarkdown {
+	dm.Markdown.Title = markdownTitle
+	return dm
+}
+
 func NewUserDingDing() *UserDingDing {
 	return &UserDingDing{
 		MsgType: "text",
