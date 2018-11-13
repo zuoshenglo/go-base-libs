@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+	"sort"
 )
 
 var Tool = &tool{}
@@ -65,6 +66,38 @@ func (t *tool) RemoveRepByMap(slc []string) []string {
 		}
 	}
 	return result
+}
+
+// 对map 按string key 来进行排序
+func (t *tool) SortKeyForMap(sortMap map[string]interface{}) map[string]interface{}{
+	s1 := make([]string,0,len(sortMap))
+	for k,_ := range sortMap{
+		s1 = append(s1, k)
+	}
+
+	s2 := make(map[string]interface{})
+
+	sort.Strings(s1)
+
+	for _, v := range s1 {
+		s2[v] = sortMap[v]
+	}
+	return s2
+}
+
+// 字符串 转为 一层json， 排序后， 返回为 string
+func (t *tool) SortKeyForStringJson(formatString string) (string, error) {
+	data, err := Tool.StringToJson(formatString)
+	if err !=nil {
+		return "", err
+	}
+	data = Tool.SortKeyForMap(data)
+
+	if jres, jerr := json.Marshal(data); jerr != nil {
+		return "", jerr
+	} else {
+		return string(jres[:]), nil
+	}
 }
 
 func (t *tool) GetNowTime() string {
