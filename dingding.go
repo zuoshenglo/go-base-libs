@@ -94,15 +94,14 @@ type DingDingBase struct {
 }
 
 type DingDingMarkdown struct {
-	Msgtype string `json:"msgtype,omitempty"`
+	Msgtype string
 	Markdown struct {
-		Title string `json:"title,omitempty"`
-		Text string `json:"text,omitempty"`
+		Title string
+		Text string
 	}
-
 	At struct {
-		AtMobiles [] string `json:"atMobiles,omitempty"`
-		IsAtAll bool `json:"isAtAll,omitempty"`
+		AtMobiles [] string
+		IsAtAll bool
 	}
 }
 
