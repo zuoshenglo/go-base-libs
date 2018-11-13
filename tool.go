@@ -5,6 +5,7 @@ import (
 	"os"
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 var Tool = &tool{}
@@ -66,6 +67,9 @@ func (t *tool) RemoveRepByMap(slc []string) []string {
 	return result
 }
 
+func (t *tool) GetNowTime() string {
+	return fmt.Sprintf("%s", time.Now())[:19]
+}
 //http服务设置跨域， 添加头部
 func (t *tool) SetCrossDomain(w http.ResponseWriter) http.ResponseWriter {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
