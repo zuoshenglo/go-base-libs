@@ -94,28 +94,20 @@ type DingDingBase struct {
 }
 
 type DingDingMarkdown struct {
-	Msgtype string
+	Msgtype string `json:"msgtype,omitempty"`
 	Markdown struct {
-		Title string
-		Text string
-	}
+		Title string `json:"title,omitempty"`
+		Text string `json:"text,omitempty"`
+	} `json:"markdown,omitempty"`
 	At struct {
-		AtMobiles [] string
-		IsAtAll bool
-	}
+		AtMobiles [] string `json:"atMobiles,omitempty"`
+		IsAtAll bool `json:"isAtAll,omitempty"`
+	} `json:"at,omitempty"`
 }
 
 func NewDingDingMarkdown() *DingDingMarkdown {
 	return &DingDingMarkdown{
 		Msgtype: "markdown",
-		Markdown: struct {
-			Title string
-			Text  string
-		}{Title: "", Text: ""},
-		At: struct {
-			AtMobiles [] string
-			IsAtAll   bool
-		}{AtMobiles: [] string{}, IsAtAll: false},
 	}
 }
 
@@ -150,7 +142,24 @@ func (u *UserDingDing) SetUrl(url string) *UserDingDing {
 	return u
 }
 
+func NewDingDingMarkdownSend(markdownText string, dingurl string) (string, error) {
+	var sendStruct = NewDingDingMarkdown().SetTitle("title").SetText(markdownText)
 
+	//
+	sendData, err := json.Marshal(sendStruct)
+	if err != nil {
+		return "", err
+	}
+
+	// send ding webhook
+	dres, derr := NewHttpRequestCustom(sendData, "POST", dingurl).SetRequestProtocol("https").ExecRequest()
+
+	if derr != nil {
+		return  "", derr
+	}
+
+	return  dres, nil
+}
 // func NewBaseDingDingAlter(userReqBody []byte) ([]byte, error) {
 // 	var userDingDing *UserDingDing
 // 	if err := json.Unmarshal(userReqBody, userDingDing); err != nil {
