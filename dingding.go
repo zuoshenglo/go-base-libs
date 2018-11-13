@@ -130,6 +130,11 @@ func (dm * DingDingMarkdown) SetTitle(markdownTitle string) * DingDingMarkdown {
 	return dm
 }
 
+func (dm * DingDingMarkdown) CreateMarkdownText(formatData map[string]interface{}) * DingDingMarkdown {
+	dm.Markdown.Text = "geshihuacshi"
+	return dm
+}
+
 func NewUserDingDing() *UserDingDing {
 	return &UserDingDing{
 		MsgType: "text",
@@ -145,6 +150,7 @@ func (u *UserDingDing) SetUrl(url string) *UserDingDing {
 	u.Url = url
 	return u
 }
+
 
 // func NewBaseDingDingAlter(userReqBody []byte) ([]byte, error) {
 // 	var userDingDing *UserDingDing

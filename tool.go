@@ -3,6 +3,7 @@ package go_base_libs
 import (
 	"net/http"
 	"os"
+	"encoding/json"
 )
 
 var Tool = &tool{}
@@ -17,6 +18,14 @@ func (t *tool) GetCwd() string {
 
 func (t *tool) JsonStringToStruct() {
 
+}
+
+func (t *tool) StringToJson(formatString string) (map[string]interface{}, error){
+	var data map[string]interface{}
+	if err := json.Unmarshal([]byte(formatString), &data); err != nil {
+		return data, err
+	}
+	return data, nil
 }
 
 //去重复
