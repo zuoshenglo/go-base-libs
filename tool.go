@@ -101,7 +101,8 @@ func (t *tool) SortKeyForStringJson(formatString string) (string, error) {
 }
 
 func (t *tool) GetNowTime() string {
-	return fmt.Sprintf("%s", time.Now())[:19]
+	//return fmt.Sprintf("%s", time.Now())[:19]
+	return time.Now().Format("2006-01-02 15:04:05")
 }
 //http服务设置跨域， 添加头部
 func (t *tool) SetCrossDomain(w http.ResponseWriter) http.ResponseWriter {
