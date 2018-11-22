@@ -100,7 +100,8 @@ func (aloss * AliOss) DownloadFile(objectName string) (string, error) {
 
 // 下载到本地， 逐行 读取
 func (aloss * AliOss) DownloadFileLocal(objectName string, localPath string) error {
-	Tool.DeleteFile("/tmp/tmpOssFile")
+	Tool.DeleteFile(localPath)
+	Tool.DeleteFile(localPath + ".temp")
 	err := aloss.bucket.GetObjectToFile(objectName, localPath)
 	if err != nil {
 		fmt.Println("Error:", err)
