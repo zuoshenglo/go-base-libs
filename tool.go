@@ -19,6 +19,14 @@ func (t *tool) GetCwd() string {
 	return dir
 }
 
+// 删除文件
+func (t *tool) DeleteFile(filePath string) {
+	err := os.Remove(filePath)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
 func (t *tool) JsonStringToStruct() {
 
 }
