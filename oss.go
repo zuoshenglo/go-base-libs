@@ -51,16 +51,20 @@ func (aloss * AliOss) GetSaveSpace() (* AliOss, error) {
 
 // 获得文件列表
 
-func (aloss * AliOss) ListFiles(marKer string)  {
+func (aloss * AliOss) ListFiles(marKer string) [] string {
+
+	returnStringSlice := make([] string, 0)
 	marker := marKer
 	for {
 		lsRes, err := aloss.bucket.ListObjects(oss.Marker(marker))
 		if err != nil {
 			fmt.Println(err)
+			continue
 		}
 		// 打印列举文件，默认情况下一次返回100条记录。
 		for _, object := range lsRes.Objects {
-			fmt.Println("Bucket: ", object.Key)
+			//fmt.Println("Bucket: ", object.Key)
+			returnStringSlice = append(returnStringSlice, object.Key)
 		}
 		if lsRes.IsTruncated {
 			marker = lsRes.NextMarker
@@ -68,6 +72,8 @@ func (aloss * AliOss) ListFiles(marKer string)  {
 			break
 		}
 	}
+
+	return returnStringSlice
 }
 
 // 流式 下载, 最后以字符串的形式，打印到 屏幕界面。
@@ -84,7 +90,7 @@ func (aloss * AliOss) DownloadFile(objectName string) (string, error) {
 		return "", err
 	}
 
-	return string(data), nil
+	return string( data ), nil
 	//fmt.Println("data:", string(data))
 	//fmt.Println(strings.Split(string(data), "\r"))
 
