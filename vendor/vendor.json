@@ -11,6 +11,12 @@
 			"revision": ""
 		},
 		{
+			"checksumSHA1": "vTr6ol6aMSdrwPcgPbHRx0vabps=",
+			"path": "github.com/aliyun/aliyun-oss-go-sdk/oss",
+			"revision": "c6838fdc33edd68aca9fed3a805f4303ca330b0c",
+			"revisionTime": "2018-11-16T16:03:01Z"
+		},
+		{
 			"checksumSHA1": "1bK29RcAjCAMCYS2HS3O18w4m8k=",
 			"path": "github.com/cihub/seelog",
 			"revision": "f561c5e57575bb1e0a2167028b7339b3a8d16fb4",
