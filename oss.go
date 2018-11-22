@@ -3,9 +3,7 @@ package go_base_libs
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"fmt"
-	"io"
 	"io/ioutil"
-	"strings"
 )
 
 type AliOss struct {
