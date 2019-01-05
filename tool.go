@@ -21,7 +21,6 @@ func (t *tool) CheckPort(address string, port string) (bool, error)  {
 	conn, err := net.DialTimeout("tcp", address + ":" + port, 2 * time.Second)
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("程序异常, 连接端口失败！", err)
 		}
 	}()
 	defer conn.Close()
