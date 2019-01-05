@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 	"sort"
+	"net"
 )
 
 var Tool = &tool{}
@@ -14,11 +15,26 @@ var Tool = &tool{}
 type tool struct {
 }
 
+// 检查tcp 端口是否存在
+// hostAddress 0.0.0.0 或者 0.0.0.0:80
+func (t *tool) CheckPort(address string, port string) (bool, error)  {
+	conn, err := net.Dial("tcp", address + ":" + port)
+	defer conn.Close()
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 func (t *tool) GetCwd() string {
 	dir, _ := os.Getwd()
 	return dir
 }
 
+func (t *tool) GetEnv(envKey string) string {
+	os.Getenv(envKey)
+ return ""
+}
 // 删除文件
 func (t *tool) DeleteFile(filePath string) {
 	err := os.Remove(filePath)
