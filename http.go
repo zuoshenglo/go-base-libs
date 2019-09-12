@@ -54,6 +54,7 @@ type HttpRequestCustom struct {
 	transport *http.Transport
 	user      string
 	password  string
+	contentType string
 }
 
 // protocol == http or https
@@ -84,6 +85,11 @@ func (hrc *HttpRequestCustom) SetBasicAuth(user string, password string) *HttpRe
 	return hrc
 }
 
+func (hrc *HttpRequestCustom) SetContentType(contentType string) *HttpRequestCustom  {
+	hrc.contentType = contentType
+	return hrc
+}
+
 func (hrc *HttpRequestCustom) ExecRequest() (string, error) {
 
 	tr := hrc.transport
@@ -96,7 +102,7 @@ func (hrc *HttpRequestCustom) ExecRequest() (string, error) {
 
 	//
 	req.Close = true
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", hrc.contentType)
 	req.SetBasicAuth(hrc.user, hrc.password)
 	client := &http.Client{Transport: tr}
 	resp, herr := client.Do(req)
@@ -121,5 +127,6 @@ func NewHttpRequestCustom(body []byte, method string, url string) *HttpRequestCu
 		body:   body,
 		method: method,
 		url:    url,
+		contentType: "application/json",
 	}
 }
