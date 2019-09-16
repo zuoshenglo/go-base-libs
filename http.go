@@ -10,6 +10,8 @@ import (
 	"time"
 
 	log "github.com/cihub/seelog"
+	"net/url"
+	"strings"
 )
 
 func SendDingDingWebHook(sendData []byte, url string) string {
@@ -55,6 +57,7 @@ type HttpRequestCustom struct {
 	user      string
 	password  string
 	contentType string
+	clusterinfo url.Values
 }
 
 // protocol == http or https
@@ -90,12 +93,25 @@ func (hrc *HttpRequestCustom) SetContentType(contentType string) *HttpRequestCus
 	return hrc
 }
 
+func (hrc *HttpRequestCustom) SetFormKeyValues(key string, value string) *HttpRequestCustom {
+	hrc.clusterinfo.Add(key, value)
+	return hrc
+}
+
 func (hrc *HttpRequestCustom) ExecRequest() (string, error) {
 
 	tr := hrc.transport
+	var err error
+	var req *http.Request
 
 	//http 主体
-	req, err := http.NewRequest(hrc.method, hrc.url, bytes.NewBuffer(hrc.body))
+	if hrc.contentType == "application/x-www-form-urlencoded" {
+		data := hrc.clusterinfo.Encode()
+		req, err = http.NewRequest("POST", hrc.url, strings.NewReader(data))
+	} else {
+		req, err = http.NewRequest(hrc.method, hrc.url, bytes.NewBuffer(hrc.body))
+	}
+
 	if err != nil {
 		return "", err
 	}
@@ -104,6 +120,9 @@ func (hrc *HttpRequestCustom) ExecRequest() (string, error) {
 	req.Close = true
 	req.Header.Set("Content-Type", hrc.contentType)
 	req.SetBasicAuth(hrc.user, hrc.password)
+	//if hrc.contentType == "application/x-www-form-urlencoded" {
+	//	req.PostForm.Add("json", "{\"parameter\": [{\"name\": \"DEPLOY_ENV\", \"value\": \"test\"}, {\"name\": \"GIT_VERSION\", \"value\": \"last\"}]}")
+	//}
 	client := &http.Client{Transport: tr}
 	resp, herr := client.Do(req)
 	if herr != nil {
@@ -122,11 +141,12 @@ func (hrc *HttpRequestCustom) ExecRequest() (string, error) {
 // if err != nil {
 // 	fmt.Println(err)
 // }
-func NewHttpRequestCustom(body []byte, method string, url string) *HttpRequestCustom {
+func NewHttpRequestCustom(body []byte, method string, dstUrl string) *HttpRequestCustom {
 	return &HttpRequestCustom{
 		body:   body,
 		method: method,
-		url:    url,
+		url:    dstUrl,
 		contentType: "application/json",
+		clusterinfo: url.Values{},
 	}
 }
