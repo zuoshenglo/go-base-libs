@@ -1,13 +1,13 @@
 package go_base_libs
 
 import (
-	"net/http"
-	"os"
 	"encoding/json"
 	"fmt"
-	"time"
-	"sort"
 	"net"
+	"net/http"
+	"os"
+	"sort"
+	"time"
 )
 
 var Tool = &tool{}
@@ -17,8 +17,8 @@ type tool struct {
 
 // 检查tcp 端口是否存在
 // hostAddress 0.0.0.0 或者 0.0.0.0:80
-func (t *tool) CheckPort(address string, port string) (bool, error)  {
-	conn, err := net.DialTimeout("tcp", address + ":" + port, 2 * time.Second)
+func (t *tool) CheckPort(address string, port string) (bool, error) {
+	conn, err := net.DialTimeout("tcp", address+":"+port, 2*time.Second)
 	defer func() {
 		if err := recover(); err != nil {
 		}
@@ -38,8 +38,9 @@ func (t *tool) GetCwd() string {
 
 func (t *tool) GetEnv(envKey string) string {
 	os.Getenv(envKey)
- return ""
+	return ""
 }
+
 // 删除文件
 func (t *tool) DeleteFile(filePath string) {
 	err := os.Remove(filePath)
@@ -52,7 +53,7 @@ func (t *tool) JsonStringToStruct() {
 
 }
 
-func (t *tool) StringToJson(formatString string) (map[string]interface{}, error){
+func (t *tool) StringToJson(formatString string) (map[string]interface{}, error) {
 	var data map[string]interface{}
 	if err := json.Unmarshal([]byte(formatString), &data); err != nil {
 		return data, err
@@ -98,9 +99,9 @@ func (t *tool) RemoveRepByMap(slc []string) []string {
 }
 
 // 对map 按string key 来进行排序
-func (t *tool) SortKeyForMap(sortMap map[string]interface{}) map[string]interface{}{
-	s1 := make([]string,0,len(sortMap))
-	for k,_ := range sortMap{
+func (t *tool) SortKeyForMap(sortMap map[string]interface{}) map[string]interface{} {
+	s1 := make([]string, 0, len(sortMap))
+	for k, _ := range sortMap {
 		s1 = append(s1, k)
 	}
 
@@ -117,7 +118,7 @@ func (t *tool) SortKeyForMap(sortMap map[string]interface{}) map[string]interfac
 // 字符串 转为 一层json， 排序后， 返回为 string
 func (t *tool) SortKeyForStringJson(formatString string) (string, error) {
 	data, err := Tool.StringToJson(formatString)
-	if err !=nil {
+	if err != nil {
 		return "", err
 	}
 	data = Tool.SortKeyForMap(data)
@@ -133,6 +134,7 @@ func (t *tool) GetNowTime() string {
 	//return fmt.Sprintf("%s", time.Now())[:19]
 	return time.Now().Format("2006-01-02 15:04:05")
 }
+
 //http服务设置跨域， 添加头部
 func (t *tool) SetCrossDomain(w http.ResponseWriter) http.ResponseWriter {
 	w.Header().Add("Access-Control-Allow-Origin", "*")
